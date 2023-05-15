@@ -1,32 +1,12 @@
-import time
-
+import wmi
+import pywin
 import init
 import lib
+import game
 
-#
-#
-#
-main = True
-매크로 = True
+# equipment = wmi.WMI()
+# SerialNumber = ""
+# for item in equipment.win32_OperatingSystem():
+#     SerialNumber = item.SerialNumber
 
-images = ["한번","사용하기"]
-while main :
-    lib.이미지생성()
-
-    for image in images :
-        이미지 = lib.이미지찾기(image)
-
-        if(이미지) :
-            lib.마우스클릭()
-
-            lib.키입력(init.enter)
-            lib.키입력(init.enter)
-            lib.키입력(init.enter)
-            lib.키입력(init.enter)
-
-
-
-            time.sleep(2)
-
-
-
+game.채널이동()

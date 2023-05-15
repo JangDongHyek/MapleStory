@@ -4,98 +4,31 @@ import init
 import lib
 import datas
 import re
+import wmi
 
-def 기본설정(id,pw,캐릭터) :
-    dict = {
-        "id": id,
-        "pw": pw
-    }
-    유저 = lib.dictSelect("users", dict)
-    if (유저):
-        lib.프린트("환영합니다 {}님".format(유저['name']))
-    else:
-        lib.프린트("가입된 유저가 아닙니다.")
-        exit()
+def 채널이동() :
+    count = 0
+    main = True
+    while main :
+        설정 = lib.이미지찾기("설정")
+        if(설정) :
+            lib.마우스클릭(설정)
+            time.sleep(1)
+            lib.키입력(init.enter)
+            time.sleep(1)
+            lib.키입력(init.right)
+            time.sleep(8)
+            lib.키입력(init.enter)
+            main = False
+            lib.프린트("채널이동완료")
 
-    if 캐릭터 :
-        접속캐릭터 = 캐릭터
-    else :
-        lib.이미지생성("캐릭터", [937, 1004, 1012, 1022])
-        접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
-                                         config='-c preserve_interword_spaces=1 --psm 3')
-        접속캐릭터 = re.sub('[\n,",;]',"",접속캐릭터)
+        time.sleep(1)
+        count += 1
 
-    lib.프린트("인식된 닉네임 {}".format(접속캐릭터))
-
-    dict = {
-        "name": 접속캐릭터
-    }
-    닉네임 = lib.dictSelect("nickname", dict)
-    if (not 닉네임):
-        lib.프린트("닉네임 데이터가 존재하지 않습니다.")
-        exit()
-
-    dict = {
-        "_id": 닉네임['c_id'],
-        "u_id" : 유저['_id']
-    }
-
-    캐릭터 = lib.dictSelect("characters", dict)
-    if 캐릭터 :
-        lib.프린트("이름 : {} | 직업 : {}".format(캐릭터['name'], 캐릭터['job']))
-    else :
-        lib.프린트("캐릭터 데이터가 존재하지 않습니다.")
-        exit()
-
-    dict = {
-        "c_id": 캐릭터['_id']
-    }
-
-    스킬 = lib.dictSelect("skills", dict," or c_id = 0", True,"cooldown","desc")
-    스킬셋팅 = []
-    if(스킬) :
-        lib.프린트("설정된 스킬셋 {}개 불러오는중.".format(len(스킬)))
-
-        # 스킬가공
-        for skill in 스킬 :
-            skill["key"] = eval("init.{}".format(skill['key']))
-            skill["time"] = eval(skill['time'])
-            skill["relations_id"] = json.loads(skill["relations_id"])
-            skill["relations"] = json.loads(skill["relations"])
-
-        # 스킬 셋팅
-        for skill in 스킬 :
-            if not skill['relation'] :
-                for _id in skill['relations_id'] :
-                    for relation in 스킬 :
-                        if _id == relation['_id'] :
-                            skill['relations'].append(relation)
-                스킬셋팅.append(skill)
-
-
-        lib.프린트("스킬셋팅 완료.")
-    else :
-        lib.프린트("설정된 스킬셋이 없습니다.")
-        exit()
-
-    dict = {
-        "type": 캐릭터['move'],
-    }
-    이동 = lib.dictSelect("moves",dict,"",True,"orders","asc")
-    if(이동) :
-        lib.프린트("설정된 이동셋 {}개 불러오는중.".format(len(이동)))
-        이동셋팅 = set이동패턴(이동)
-        lib.프린트("이동셋팅 완료.")
-    else :
-        lib.프린트("설정된 이동셋이 없습니다.")
-        exit()
-
-    obj = {
-        "스킬" : 스킬셋팅,
-        "이동" : 이동셋팅,
-        "이동타입" : 캐릭터['move']
-    }
-    return obj
+        if(count > 5) :
+            main = False
+            lib.프린트("채널이동실패")
+            lib.이미지생성(lib.현재시간(True))
 
 def 룬찾으러가기(환경설정) :
     main = True
@@ -107,12 +40,8 @@ def 룬찾으러가기(환경설정) :
             main = False
         lib.이미지생성("roon")
         위치 = lib.픽셀서치(환경설정["미니맵"],datas.룬,"roon")
-        if (위치 or 룬확인):
+        if (위치):
             케릭터위치 = lib.픽셀서치(환경설정["미니맵"], datas.내케릭터,"roon")
-            룬확인 = True
-            # print("목표물 : " + str(위치[0]) + "," + str(위치[1]))
-            # print("케릭터위치 : " + str(케릭터위치[0]) + "," + str(케릭터위치[1]))
-
             # x축
             if (위치 == None or abs(위치[0] - 케릭터위치[0]) < 7):
                 print("x ok")
@@ -184,6 +113,46 @@ def 룬찾으러가기(환경설정) :
             elif (위치[0] > 케릭터위치[0]):
                 lib.키입력(init.left, False)
                 lib.키입력(init.right, True)
+
+        else :
+            print("위치 안읽힘")
+            lib.키입력(init.space)
+            time.sleep(0.5)
+            lib.이미지생성("res/roon/" + lib.현재시간(True), [690, 160, 1230, 350])
+            time.sleep(0.2)
+            while main:
+                lib.이미지생성("roon", [690, 160, endx, 350])
+                file_list = init.os.listdir("res/roon/datas")
+                for data in file_list:
+                    file = "roon/datas/" + data.split(".")[0]
+                    if (lib.이미지찾기(file, 0.80, "roon")):
+                        if ("up" in file):
+                            print("up")
+                            lib.키입력(init.up)
+                            time.sleep(0.5)
+                            break
+                        elif ("down" in file):
+                            print("down")
+                            lib.키입력(init.down)
+                            time.sleep(0.5)
+                            break
+                        elif ("left" in file):
+                            print("left")
+                            lib.키입력(init.left)
+                            time.sleep(0.5)
+                            break
+                        elif ("right" in file):
+                            print("right")
+                            lib.키입력(init.right)
+                            time.sleep(0.5)
+                            break
+                    else:
+                        if (endx > 1230):
+                            lib.프린트("1.5초후 룬매크로 종료")
+                            time.sleep(1.5)
+                            main = False
+                            break
+                endx += 30
 
 
 def thread사냥(환경설정) :
@@ -318,6 +287,125 @@ def 환경설정(기본설정) :
 
     return obj
 
+
+def 회원정보(id,pw) :
+    dict = {
+        "id": id,
+        "pw": pw
+    }
+    회원 = lib.dictSelect("users", dict)
+    if (회원):
+        lib.프린트("환영합니다 {}님".format(회원['name']))
+    else:
+        lib.프린트("가입된 회원이 아닙니다.")
+        exit()
+
+    lib.프린트("기기 확인중.")
+
+    equipment = wmi.WMI()
+    SerialNumber = ""
+    for item in equipment.win32_OperatingSystem():
+        SerialNumber = item.SerialNumber
+
+    dict = {
+        "u_id" : 회원['_id'],
+        "SerialNumber" : SerialNumber
+    }
+    기기 = lib.dictSelect("equipment", dict)
+
+    if(기기) :
+        lib.프린트("{} 등록된 기기 입니다.".format(기기['CSName']))
+
+        if(기기['type'] == "Desk") :
+            회원['equipment'] = 0x05
+
+        else :
+            회원['equipment'] = 0x02
+    else :
+        lib.프린트("등록된 기기가 없습니다..")
+
+
+        exit()
+
+    return 회원
+
+def 기본설정(회원,캐릭터) :
+    if 캐릭터 :
+        접속캐릭터 = 캐릭터
+    else :
+        lib.이미지생성("캐릭터", [937, 1004, 1012, 1022])
+        접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
+                                         config='-c preserve_interword_spaces=1 --psm 3')
+        접속캐릭터 = re.sub('[\n,",;]',"",접속캐릭터)
+
+    lib.프린트("인식된 닉네임 {}".format(접속캐릭터))
+
+    dict = {
+        "name": 접속캐릭터
+    }
+    닉네임 = lib.dictSelect("nickname", dict)
+    if (not 닉네임):
+        lib.프린트("닉네임 데이터가 존재하지 않습니다.")
+        exit()
+
+    dict = {
+        "_id": 닉네임['c_id'],
+        "u_id" : 회원['_id']
+    }
+
+    캐릭터 = lib.dictSelect("characters", dict)
+    if 캐릭터 :
+        lib.프린트("이름 : {} | 직업 : {}".format(캐릭터['name'], 캐릭터['job']))
+    else :
+        lib.프린트("캐릭터 데이터가 존재하지 않습니다.")
+        exit()
+
+    dict = {
+        "c_id": 캐릭터['_id']
+    }
+
+    스킬 = lib.dictSelect("skills", dict," or c_id = 0", True,"cooldown","desc")
+    스킬셋팅 = []
+    if(스킬) :
+        lib.프린트("설정된 스킬셋 {}개 불러오는중.".format(len(스킬)))
+
+        # 스킬가공
+        for skill in 스킬 :
+            skill["key"] = eval("init.{}".format(skill['key']))
+            skill["time"] = eval(skill['time'])
+            skill["relations_id"] = json.loads(skill["relations_id"])
+            skill["relations"] = json.loads(skill["relations"])
+
+        # 스킬 셋팅
+        for skill in 스킬 :
+            if not skill['relation'] :
+                for _id in skill['relations_id'] :
+                    for relation in 스킬 :
+                        if _id == relation['_id'] :
+                            skill['relations'].append(relation)
+                스킬셋팅.append(skill)
+
+    else :
+        lib.프린트("설정된 스킬셋이 없습니다.")
+        exit()
+
+    dict = {
+        "type": 캐릭터['move'],
+    }
+    이동 = lib.dictSelect("moves",dict,"",True,"orders","asc")
+    if(이동) :
+        이동셋팅 = set이동패턴(이동)
+
+    else :
+        lib.프린트("설정된 이동셋이 없습니다.")
+        exit()
+
+    obj = {
+        "스킬" : 스킬셋팅,
+        "이동" : 이동셋팅,
+        "이동타입" : 캐릭터['move']
+    }
+    return obj
 
 def set이동패턴(이동) :
     왼쪽 = {

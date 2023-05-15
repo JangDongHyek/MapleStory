@@ -5,9 +5,8 @@ import lib
 import game
 import threading
 
-캐릭터 = "마카데미데몬"
-기본설정 = game.기본설정("melkin","141215",캐릭터)
-equipment = 0x05
+회원 = game.회원정보("melkin", "141215")
+equipment = 회원['equipment']
 
 main = True
 매크로 = True
@@ -15,6 +14,8 @@ while main :
     if init.win32api.GetKeyState(equipment) :
 
         if 매크로 :
+            캐릭터 = ""
+            기본설정 = game.기본설정(회원, 캐릭터)
             환경설정 = game.환경설정(기본설정)
             환경설정["스레드"] = False
             환경설정["equipment"] = equipment
