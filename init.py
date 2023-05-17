@@ -1,12 +1,11 @@
 import lib
-import serial
+
 import win32con
 import win32gui
 import win32api
 import win32ui
 from PIL import Image,ImageGrab
-import pyautogui as pg
-import keyboard
+
 import cv2
 import numpy as np
 import random
@@ -16,19 +15,15 @@ import subprocess
 import os
 import mss
 import winsound
-import sounddevice
 import playsound
-import scipy.io as sio
-import keyboard
+
 import math
 from ctypes import *
 import pymysql
 import pytesseract
 
 from gtts import gTTS
-from IPython.display import Audio
 
-from pynput.mouse import Button, Controller
 
 # 이미지 한글추출 태서렉트 활성화
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -47,9 +42,6 @@ hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
 # hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
 # hwnd3 = win32gui.GetWindow(hwnd2, win32con.GW_CHILD)
 hwnd = hwnd1
-
-# 마우스
-mouse = Controller()
 
 # 하드웨어관련 .dll파일 연결확인
 dd_dll = windll.LoadLibrary('C:/Users/rando/Desktop/python/MapleStory/DD94687.64.dll')

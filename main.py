@@ -8,6 +8,7 @@ import threading
 회원 = game.회원정보("melkin", "141215")
 equipment = 회원['equipment']
 
+룬시간 = None
 main = True
 매크로 = True
 while main :
@@ -77,7 +78,12 @@ while main :
         if(lib.픽셀서치(환경설정["미니맵"],datas.룬)) :
             환경설정["event"].set()
             lib.재생("roon")
-            game.룬찾으러가기(환경설정)
+            if(not 룬시간 or lib.시간비교(룬시간,60)) :
+                룬시간 = time.time()
+                game.룬찾으러가기(환경설정)
+            else :
+                game.채널이동()
+
             매크로 = True
 
         if(환경설정["스레드"]) :

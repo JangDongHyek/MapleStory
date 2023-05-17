@@ -21,6 +21,7 @@ def 채널이동() :
             lib.키입력(init.enter)
             main = False
             lib.프린트("채널이동완료")
+            time.sleep(5)
 
         time.sleep(1)
         count += 1
