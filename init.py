@@ -1,11 +1,9 @@
 import lib
-
 import win32con
 import win32gui
 import win32api
 import win32ui
 from PIL import Image,ImageGrab
-
 import cv2
 import numpy as np
 import random
@@ -13,21 +11,18 @@ import time
 import platform
 import subprocess
 import os
-import mss
-import winsound
 import playsound
-
+import re
+import wmi
+import json
 import math
 from ctypes import *
 import pymysql
 import pytesseract
-
 from gtts import gTTS
-
 
 # 이미지 한글추출 태서렉트 활성화
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
 
 # DB연결
 try :
@@ -36,6 +31,10 @@ try :
     cur = conn.cursor(pymysql.cursors.DictCursor)
 except :
     lib.프린트("DB연결실패")
+    exit()
+
+# 글로벌 변수
+dd_dll = None
 
 #백그라운드 (클래스,캡션)
 hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
@@ -43,14 +42,16 @@ hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
 # hwnd3 = win32gui.GetWindow(hwnd2, win32con.GW_CHILD)
 hwnd = hwnd1
 
+
+
 # 하드웨어관련 .dll파일 연결확인
-dd_dll = windll.LoadLibrary('C:/Users/rando/Desktop/python/MapleStory/DD94687.64.dll')
-st = dd_dll.DD_btn(0) #classdd 초기설정
-if st==1:
-    lib.프린트("하드웨어 연결")
-else:
-    lib.프린트("하드웨어 연결실패")
-    exit()
+# dd_dll = windll.LoadLibrary('C:/Users/rando/Desktop/python/MapleStory/DD94687.64.dll')
+# st = dd_dll.DD_btn(0) #classdd 초기설정
+# if st==1:
+#     lib.프린트("하드웨어 연결")
+# else:
+#     lib.프린트("하드웨어 연결실패")
+#     exit()
 
 # 전역변수
 res = "res/"

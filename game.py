@@ -1,10 +1,8 @@
 import time
-import json
 import init
 import lib
 import datas
-import re
-import wmi
+
 
 def 채널이동() :
     count = 0
@@ -303,7 +301,7 @@ def 회원정보(id,pw) :
 
     lib.프린트("기기 확인중.")
 
-    equipment = wmi.WMI()
+    equipment = init.wmi.WMI()
     SerialNumber = ""
     for item in equipment.win32_OperatingSystem():
         SerialNumber = item.SerialNumber
@@ -316,6 +314,16 @@ def 회원정보(id,pw) :
 
     if(기기) :
         lib.프린트("{} 등록된 기기 입니다.".format(기기['CSName']))
+
+        # 하드웨어관련 .dll파일 연결확인
+        init.dd_dll = init.windll.LoadLibrary(기기['dll'])
+
+        st = init.dd_dll.DD_btn(0)  # classdd 초기설정
+        if st == 1:
+            lib.프린트("하드웨어 연결")
+        else:
+            lib.프린트("하드웨어 연결실패")
+            exit()
 
         if(기기['type'] == "Desk") :
             회원['equipment'] = 0x05
@@ -334,12 +342,19 @@ def 기본설정(회원,캐릭터) :
     if 캐릭터 :
         접속캐릭터 = 캐릭터
     else :
-        lib.이미지생성("캐릭터", [937, 1004, 1012, 1022])
-        접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
-                                         config='-c preserve_interword_spaces=1 --psm 3')
-        접속캐릭터 = re.sub('[\n,",;]',"",접속캐릭터)
+        lib.키입력(init.s)
+        time.sleep(0.5)
+        lib.이미지생성()
+        time.sleep(0.5)
+        이름 = lib.이미지찾기("이름")
+        if (이름):
+            lib.이미지생성("캐릭터", [이름[0] + 50, 이름[1], 이름[0] + 150, 이름[1] + 15])
+            접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
+                                                     config='-c preserve_interword_spaces=1 --psm 3')
+            접속캐릭터 = init.re.sub('[\n,",;,|, ]', "", 접속캐릭터)
 
     lib.프린트("인식된 닉네임 {}".format(접속캐릭터))
+    lib.키입력(init.s)
 
     dict = {
         "name": 접속캐릭터
@@ -374,8 +389,8 @@ def 기본설정(회원,캐릭터) :
         for skill in 스킬 :
             skill["key"] = eval("init.{}".format(skill['key']))
             skill["time"] = eval(skill['time'])
-            skill["relations_id"] = json.loads(skill["relations_id"])
-            skill["relations"] = json.loads(skill["relations"])
+            skill["relations_id"] = init.json.loads(skill["relations_id"])
+            skill["relations"] = init.json.loads(skill["relations"])
 
         # 스킬 셋팅
         for skill in 스킬 :
