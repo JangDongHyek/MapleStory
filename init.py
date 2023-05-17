@@ -1,4 +1,5 @@
 import lib
+import matplotlib.pyplot as plt
 import win32con
 import win32gui
 import win32api
@@ -21,26 +22,34 @@ import pymysql
 import pytesseract
 from gtts import gTTS
 
+# 글로벌 변수 및 셋팅
+dd_dll = None
+db_host = "localhost"
+db_user = "maple"
+db_password = "141215"
+db_name = "maple"
+main_id = "melkin"
+main_pw = "141215"
+
 # 이미지 한글추출 태서렉트 활성화
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # DB연결
 try :
-    conn = pymysql.connect(host='localhost',user='maple',password='141215',db='maple',charset='utf8')
+    conn = pymysql.connect(host=db_host,user=db_user,password=db_password,db=db_name,charset='utf8')
     lib.프린트("DB연결")
     cur = conn.cursor(pymysql.cursors.DictCursor)
 except :
     lib.프린트("DB연결실패")
     exit()
 
-# 글로벌 변수
-dd_dll = None
+
 
 #백그라운드 (클래스,캡션)
 hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
-# hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
+hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
 # hwnd3 = win32gui.GetWindow(hwnd2, win32con.GW_CHILD)
-hwnd = hwnd1
+hwnd = hwnd2
 
 
 

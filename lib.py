@@ -56,7 +56,7 @@ def 프린트(variable) :
     print(현재시간() + " | " + variable)
 
 def 재생(file) :
-    file = file + ".mp3"
+    file = "sound/" + file + ".mp3"
     init.playsound.playsound(file)
 
 def TTS생성(text) :

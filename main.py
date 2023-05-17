@@ -5,7 +5,7 @@ import lib
 import game
 import threading
 
-회원 = game.회원정보("melkin", "141215")
+회원 = game.회원정보(init.main_id, init.main_pw)
 equipment = 회원['equipment']
 
 룬시간 = None
