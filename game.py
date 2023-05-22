@@ -71,7 +71,7 @@ def 룬먹기() :
 
             for img in images:
                 file = "roon/datas/{}/".format(derection) + img
-                if (lib.이미지찾기(file, 0.80, "roon")):
+                if (lib.이미지찾기(file, 0.85, "roon")):
                     print(derection)
                     lib.키입력(eval("init.{}".format(derection)))
                     time.sleep(1)
@@ -161,18 +161,34 @@ def thread사냥(환경설정) :
 
             # 현재 케릭터위치에 따른 x이동패턴 수정
             if (환경설정["미니맵중앙"] < 케릭터위치[0]):
+                # 원래 지울패턴 (내케릭이 오른쪽에있을떄)
                 for i in range(환경설정["x"]):
                     lib.배열안객체타겟삭제(이동패턴,"이름","오른쪽")
-            else:
-                for i in range(환경설정["x"]):
+                # 확률로 지워져야할 패턴
+                for i in range(init.random.randrange(0,환경설정["x"]+1)):
                     lib.배열안객체타겟삭제(이동패턴,"이름","왼쪽")
+            else:
+                # 원래 지울패턴 (내케릭이 왼쪽에있을떄)
+                for i in range(환경설정["x"]):
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "왼쪽")
+                # 확률로 지워져야할 패턴
+                for i in range(init.random.randrange(0, 환경설정["x"] + 1)):
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "오른쪽")
 
             if (환경설정["미니맵y중앙"] < 케릭터위치[1]):
+                # 원래 지울패턴 (내케릭이 아래에있을떄)
                 for i in range(환경설정["y"]):
-                    lib.배열안객체타겟삭제(이동패턴,"이름","아래")
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "아래")
+                # 확률로 지워져야할 패턴
+                for i in range(init.random.randrange(0, 환경설정["y"] + 1)):
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "위")
             else:
+                # 원래 지울패턴 (내케릭이 위에있을떄)
                 for i in range(환경설정["y"]):
-                    lib.배열안객체타겟삭제(이동패턴,"이름","위")
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "위")
+                # 확률로 지워져야할 패턴
+                for i in range(init.random.randrange(0, 환경설정["y"] + 1)):
+                    lib.배열안객체타겟삭제(이동패턴, "이름", "아래")
 
             init.random.shuffle(이동패턴)
 
@@ -242,8 +258,8 @@ def 환경설정(기본설정) :
         lib.프린트("미니맵 크기 확인 불가")
         exit()
     미니맵 = [10, 22, x[0], y[1]]
-    미니맵중앙 = ( (미니맵[2] - 8) / 1.9)
-    미니맵y중앙 = (미니맵[3] / 1.7)
+    미니맵중앙 = (미니맵[2] / 2) + 10
+    미니맵y중앙 = (미니맵[3] / 2)
 
     # 미니맵 크기에 따른 이동반경
     if 기본설정['이동타입'] == "텔포":
