@@ -1,42 +1,102 @@
 import time
+
+import cv2.dnn
+
 import init
 import lib
 import datas
 
 
-def 채널이동() :
+def 채널이동(환경설정) :
     count = 0
     main = True
     while main :
-        설정 = lib.이미지찾기("설정")
-        if(설정) :
-            lib.마우스클릭(설정)
-            time.sleep(1)
+        lib.키입력(init.esc)
+        time.sleep(0.5)
+        lib.이미지생성()
+        time.sleep(0.5)
+        채널변경 = lib.이미지찾기("채널변경")
+        if(채널변경) :
             lib.키입력(init.enter)
             time.sleep(1)
             lib.키입력(init.right)
-            time.sleep(8)
-            lib.키입력(init.enter)
-            main = False
-            lib.프린트("채널이동완료")
             time.sleep(5)
-
+            lib.키입력(init.enter)
+            lib.프린트("채널이동")
+            time.sleep(5)
+            lib.이미지생성()
+            time.sleep(1)
+            유저 = lib.픽셀서치(환경설정["미니맵"], datas.유저)
+            if (유저):
+                print(유저)
+                lib.프린트("유저있음 다시 채널이동")
+            else :
+                lib.프린트("유저없음 채널이동 완료")
+                main = False
         time.sleep(1)
-        count += 1
 
-        if(count > 5) :
+def 룬먹기() :
+    lib.키입력(init.right, False)
+    lib.키입력(init.left, False)
+    lib.키입력(init.down, False)
+    lib.키입력(init.up, False)
+    init.time.sleep(0.5)
+    lib.키입력(init.space)
+    time.sleep(0.5)
+    lib.이미지생성("res/roon/" + lib.현재시간(True), [690, 170, 1230, 350])
+    time.sleep(0.5)
+
+    main = True
+    endx = 750
+
+    up_list = init.os.listdir("res/roon/datas/up")
+    down_list = init.os.listdir("res/roon/datas/down")
+    right_list = init.os.listdir("res/roon/datas/right")
+    left_list = init.os.listdir("res/roon/datas/left")
+
+    directions = {
+        "up": up_list,
+        "down": down_list,
+        "right": right_list,
+        "left": left_list
+    }
+
+    while main:
+        lib.이미지생성("roon", [690, 170, endx, 350])
+
+        find = False
+
+        for derection in directions:
+            images = directions[derection]
+
+            for img in images:
+                file = "roon/datas/{}/".format(derection) + img
+                if (lib.이미지찾기(file, 0.80, "roon")):
+                    print(derection)
+                    lib.키입력(eval("init.{}".format(derection)))
+                    time.sleep(1)
+                    find = True
+                    break
+
+            if (find):
+                break
+
+        if (endx > 1230):
+            lib.프린트("1.5초후 룬매크로 종료")
+            time.sleep(1.5)
             main = False
-            lib.프린트("채널이동실패")
-            lib.이미지생성(lib.현재시간(True))
+            break
+
+        endx += 30
 
 def 룬찾으러가기(환경설정) :
     main = True
-    endx = 750
-    룬확인 = False
+
     while main:
 
         if not init.win32api.GetKeyState(환경설정['equipment']):
             main = False
+
         lib.이미지생성("roon")
         위치 = lib.픽셀서치(환경설정["미니맵"],datas.룬,"roon")
         if (위치):
@@ -48,48 +108,13 @@ def 룬찾으러가기(환경설정) :
                 lib.키입력(init.left, False)
                 lib.키입력(init.down, False)
                 lib.키입력(init.up, False)
-                init.time.sleep(1)
-
+                init.time.sleep(0.5)
 
                 if (위치 == None or abs(위치[1] - 케릭터위치[1]) < 7):
                     print("y ok")
-                    lib.키입력(init.space)
-                    time.sleep(0.5)
-                    lib.이미지생성("res/roon/" + lib.현재시간(True),[690,160,1230,350])
-                    time.sleep(0.2)
-                    while main :
-                        lib.이미지생성("roon",[690,160,endx,350])
-                        file_list = init.os.listdir("res/roon/datas")
-                        for data in file_list:
-                            file = "roon/datas/" + data.split(".")[0]
-                            if(lib.이미지찾기(file,0.80,"roon")) :
-                                if("up" in file) :
-                                    print("up")
-                                    lib.키입력(init.up)
-                                    time.sleep(0.5)
-                                    break
-                                elif("down" in file) :
-                                    print("down")
-                                    lib.키입력(init.down)
-                                    time.sleep(0.5)
-                                    break
-                                elif ("left" in file):
-                                    print("left")
-                                    lib.키입력(init.left)
-                                    time.sleep(0.5)
-                                    break
-                                elif ("right" in file):
-                                    print("right")
-                                    lib.키입력(init.right)
-                                    time.sleep(0.5)
-                                    break
-                            else :
-                                if(endx > 1230) :
-                                    lib.프린트("1.5초후 룬매크로 종료")
-                                    time.sleep(1.5)
-                                    main = False
-                                    break
-                        endx += 30
+                    룬먹기()
+                    main = False
+
 
                 elif (위치[1] < 케릭터위치[1]):
                     for item in 환경설정['이동패턴']:
@@ -115,43 +140,8 @@ def 룬찾으러가기(환경설정) :
 
         else :
             print("위치 안읽힘")
-            lib.키입력(init.space)
-            time.sleep(0.5)
-            lib.이미지생성("res/roon/" + lib.현재시간(True), [690, 160, 1230, 350])
-            time.sleep(0.2)
-            while main:
-                lib.이미지생성("roon", [690, 160, endx, 350])
-                file_list = init.os.listdir("res/roon/datas")
-                for data in file_list:
-                    file = "roon/datas/" + data.split(".")[0]
-                    if (lib.이미지찾기(file, 0.80, "roon")):
-                        if ("up" in file):
-                            print("up")
-                            lib.키입력(init.up)
-                            time.sleep(0.5)
-                            break
-                        elif ("down" in file):
-                            print("down")
-                            lib.키입력(init.down)
-                            time.sleep(0.5)
-                            break
-                        elif ("left" in file):
-                            print("left")
-                            lib.키입력(init.left)
-                            time.sleep(0.5)
-                            break
-                        elif ("right" in file):
-                            print("right")
-                            lib.키입력(init.right)
-                            time.sleep(0.5)
-                            break
-                    else:
-                        if (endx > 1230):
-                            lib.프린트("1.5초후 룬매크로 종료")
-                            time.sleep(1.5)
-                            main = False
-                            break
-                endx += 30
+            룬먹기()
+            main = False
 
 
 def thread사냥(환경설정) :
@@ -348,9 +338,12 @@ def 기본설정(회원,캐릭터) :
         time.sleep(0.5)
         이름 = lib.이미지찾기("이름")
         if (이름):
-            lib.이미지생성("캐릭터", [이름[0] + 50, 이름[1], 이름[0] + 150, 이름[1] + 15])
+            lib.이미지생성("캐릭터", [이름[0] + 55, 이름[1], 이름[0] + 150, 이름[1] + 15])
+            image = init.Image.open("캐릭터.bmp")
+            img_resize = image.resize((int(image.width * 3), int(image.height * 3)))
+            img_resize.save("캐릭터.bmp")
             접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
-                                                     config='-c preserve_interword_spaces=1 --psm 3')
+                                                     config='-c preserve_interword_spaces=1 --psm 4')
             접속캐릭터 = init.re.sub('[\n,",;,|, ]', "", 접속캐릭터)
 
     lib.프린트("인식된 닉네임 {}".format(접속캐릭터))

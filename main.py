@@ -78,11 +78,11 @@ while main :
         if(lib.픽셀서치(환경설정["미니맵"],datas.룬)) :
             환경설정["event"].set()
             lib.재생("roon")
-            if(not 룬시간 or lib.시간비교(룬시간,60)) :
+            if(not 룬시간 or lib.시간비교(룬시간,30)) :
                 룬시간 = time.time()
                 game.룬찾으러가기(환경설정)
             else :
-                game.채널이동()
+                game.채널이동(환경설정)
 
             매크로 = True
 

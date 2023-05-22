@@ -101,7 +101,10 @@ def 픽셀서치(points, pixcels,name = 'screenshot') :
     return None
 
 def 이미지찾기(img,threshold = .85,name = 'screenshot') :
-    img = init.res + img + ".png"
+    if "." in img :
+        img = init.res + img
+    else :
+        img = init.res + img + ".png"
     img_rgb = init.cv2.imread(name + '.bmp')
 
     img_array = init.np.fromfile(img, init.np.uint8)
@@ -120,27 +123,53 @@ def 이미지찾기(img,threshold = .85,name = 'screenshot') :
     else:
         return None
 
-def 이미지생성(name = 'screenshot',arryes = []) :
+def 이미지라인(name) :
+    img = init.cv2.imread(name)
+    img = init.cv2.GaussianBlur(img, (3, 3), 0)
+    img = init.cv2.cvtColor(img, init.cv2.COLOR_BGR2HSV)
+    coefficients = (0.001, 0, 1.2)  # (h, s, v)
+    img = init.cv2.transform(img, init.np.array(coefficients).reshape((1, 3)))
+    scr = init.Image.fromarray(img)
+    scr = scr.convert('L')
+    scr.save(name)
 
-    if(len(arryes)) :
-        im = init.ImageGrab.grab((arryes[0], arryes[1], arryes[2], arryes[3]))
-    else :
-        im = init.ImageGrab.grab()
-    im.save(name + ".bmp")
+def 이미지생성(name = 'screenshot',arryes = [], line = False) :
+
+    # if(len(arryes)) :
+    #     im = init.ImageGrab.grab((arryes[0], arryes[1], arryes[2], arryes[3]))
+    # else :
+    #     im = init.ImageGrab.grab()
+    # im.save(name + ".bmp")
 
     # 백그라운드 서취
-    # wDC = init.win32gui.GetWindowDC(init.hwnd)
-    # dcObj = init.win32ui.CreateDCFromHandle(wDC)
-    # cDC = dcObj.CreateCompatibleDC()
-    # dataBitMap = init.win32ui.CreateBitmap()
-    # dataBitMap.CreateCompatibleBitmap(dcObj, 1920, 1080)
-    # cDC.SelectObject(dataBitMap)
-    # cDC.BitBlt((0, 0), (1920, 1080), dcObj, (0, 0), init.win32con.SRCCOPY)
-    # dataBitMap.SaveBitmapFile(cDC, name + ".bmp")
-    # dcObj.DeleteDC()
-    # cDC.DeleteDC()
-    # init.win32gui.ReleaseDC(init.hwnd, wDC)
-    # init.win32gui.DeleteObject(dataBitMap.GetHandle())
+    wDC = init.win32gui.GetWindowDC(init.hwnd)
+    dcObj = init.win32ui.CreateDCFromHandle(wDC)
+    cDC = dcObj.CreateCompatibleDC()
+    dataBitMap = init.win32ui.CreateBitmap()
+    if (len(arryes)):
+        dataBitMap.CreateCompatibleBitmap(dcObj, arryes[2] - arryes[0], arryes[3] - arryes[1])
+    else :
+        dataBitMap.CreateCompatibleBitmap(dcObj, 1920, 1080)
+    cDC.SelectObject(dataBitMap)
+    if(len(arryes)) :
+        cDC.BitBlt((0,0), (arryes[2] - arryes[0] , arryes[3] - arryes[1] ), dcObj, (arryes[0], arryes[1]), init.win32con.SRCCOPY)
+    else :
+        cDC.BitBlt((0, 0), (1920, 1080), dcObj, (0, 0), init.win32con.SRCCOPY)
+    dataBitMap.SaveBitmapFile(cDC, name + ".bmp")
+    dcObj.DeleteDC()
+    cDC.DeleteDC()
+    init.win32gui.ReleaseDC(init.hwnd, wDC)
+    init.win32gui.DeleteObject(dataBitMap.GetHandle())
+
+    if(line) :
+        img = init.cv2.imread(name + ".bmp")
+        img = init.cv2.GaussianBlur(img, (3, 3), 0)
+        img = init.cv2.cvtColor(img, init.cv2.COLOR_BGR2HSV)
+        coefficients = (0.001, 0, 1.2)  # (h, s, v)
+        img = init.cv2.transform(img, init.np.array(coefficients).reshape((1, 3)))
+        scr = init.Image.fromarray(img)
+        scr = scr.convert('L')
+        scr.save(name + ".bmp")
 
 def 아두이노키보드 (key) :
     init.ard.write(key.encode('utf-8'))

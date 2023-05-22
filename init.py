@@ -47,9 +47,9 @@ except :
 
 #백그라운드 (클래스,캡션)
 hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
-hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
+# hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
 # hwnd3 = win32gui.GetWindow(hwnd2, win32con.GW_CHILD)
-hwnd = hwnd2
+hwnd = hwnd1
 
 
 
