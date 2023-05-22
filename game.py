@@ -1,6 +1,5 @@
 import time
 
-import cv2.dnn
 
 import init
 import lib
@@ -165,14 +164,14 @@ def thread사냥(환경설정) :
                 for i in range(환경설정["x"]):
                     lib.배열안객체타겟삭제(이동패턴,"이름","오른쪽")
                 # 확률로 지워져야할 패턴
-                for i in range(init.random.randrange(0,환경설정["x"]+1)):
+                for i in range(init.random.randrange(0,환경설정["x"])):
                     lib.배열안객체타겟삭제(이동패턴,"이름","왼쪽")
             else:
                 # 원래 지울패턴 (내케릭이 왼쪽에있을떄)
                 for i in range(환경설정["x"]):
                     lib.배열안객체타겟삭제(이동패턴, "이름", "왼쪽")
                 # 확률로 지워져야할 패턴
-                for i in range(init.random.randrange(0, 환경설정["x"] + 1)):
+                for i in range(init.random.randrange(0, 환경설정["x"])):
                     lib.배열안객체타겟삭제(이동패턴, "이름", "오른쪽")
 
             if (환경설정["미니맵y중앙"] < 케릭터위치[1]):
@@ -259,7 +258,7 @@ def 환경설정(기본설정) :
         exit()
     미니맵 = [10, 22, x[0], y[1]]
     미니맵중앙 = (미니맵[2] / 2) + 10
-    미니맵y중앙 = (미니맵[3] / 2)
+    미니맵y중앙 = (미니맵[3] / 2) + 11
 
     # 미니맵 크기에 따른 이동반경
     if 기본설정['이동타입'] == "텔포":
