@@ -86,6 +86,11 @@ while main :
 
             매크로 = True
 
+        if (lib.픽셀서치(datas.HP, datas.피없음)):
+            lib.키입력(init.f11)
+            lib.프린트("물약")
+
+
         if(환경설정["스레드"]) :
             환경설정["event"].set()
             print("스레드 에러 발생 재실행")

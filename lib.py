@@ -191,3 +191,9 @@ def 백클릭(x,y = 0) :
     lParam = init.win32api.MAKELONG(r_x,r_y)
     init.win32gui.PostMessage(init.hwnd, init.win32con.WM_LBUTTONDOWN,init.win32con.MK_LBUTTON, lParam)
     init.win32gui.PostMessage(init.hwnd, init.win32con.WM_LBUTTONUP, init.win32con.MK_LBUTTON, lParam)
+
+def 키보드해제() :
+    키입력(init.right, False)
+    키입력(init.left, False)
+    키입력(init.down, False)
+    키입력(init.up, False)

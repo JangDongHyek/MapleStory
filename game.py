@@ -9,6 +9,7 @@ import datas
 def 채널이동(환경설정) :
     count = 0
     main = True
+    lib.키보드해제()
     while main :
         lib.키입력(init.esc)
         time.sleep(0.5)
@@ -21,24 +22,24 @@ def 채널이동(환경설정) :
             lib.키입력(init.right)
             time.sleep(5)
             lib.키입력(init.enter)
-            lib.프린트("채널이동")
-            time.sleep(5)
-            lib.이미지생성()
             time.sleep(1)
-            유저 = lib.픽셀서치(환경설정["미니맵"], datas.유저)
-            if (유저):
-                print(유저)
-                lib.프린트("유저있음 다시 채널이동")
+            lib.이미지생성()
+            if(lib.이미지찾기("확인2")) :
+                lib.키입력(init.enter)
             else :
-                lib.프린트("유저없음 채널이동 완료")
-                main = False
+                time.sleep(5)
+                lib.이미지생성()
+                time.sleep(1)
+                유저 = lib.픽셀서치(환경설정["미니맵"], datas.유저)
+                if (유저):
+                    lib.프린트("유저있음 다시 채널이동")
+                else :
+                    lib.프린트("유저없음 채널이동 완료")
+                    main = False
         time.sleep(1)
 
 def 룬먹기() :
-    lib.키입력(init.right, False)
-    lib.키입력(init.left, False)
-    lib.키입력(init.down, False)
-    lib.키입력(init.up, False)
+    lib.키보드해제()
     init.time.sleep(0.5)
     lib.키입력(init.space)
     time.sleep(0.5)
@@ -90,27 +91,34 @@ def 룬먹기() :
 
 def 룬찾으러가기(환경설정) :
     main = True
-
+    젠시간 = time.time()
     while main:
 
         if not init.win32api.GetKeyState(환경설정['equipment']):
+            lib.프린트("룬찾으러가기 - 사용자 취소")
+            lib.키보드해제()
             main = False
+            break
+
+        if(lib.시간비교(젠시간,60)) :
+            lib.프린트("룬찾으러가기 - 1분초동안 룬 못먹음 해제")
+            lib.키보드해제()
+            main = False
+            break
 
         lib.이미지생성("roon")
         위치 = lib.픽셀서치(환경설정["미니맵"],datas.룬,"roon")
         if (위치):
             케릭터위치 = lib.픽셀서치(환경설정["미니맵"], datas.내케릭터,"roon")
             # x축
-            if (위치 == None or abs(위치[0] - 케릭터위치[0]) < 7):
+            if (abs(위치[0] - 케릭터위치[0]) < 7):
                 print("x ok")
-                lib.키입력(init.right, False)
-                lib.키입력(init.left, False)
-                lib.키입력(init.down, False)
-                lib.키입력(init.up, False)
+                lib.키보드해제()
                 init.time.sleep(0.5)
 
-                if (위치 == None or abs(위치[1] - 케릭터위치[1]) < 7):
+                if (abs(위치[1] - 케릭터위치[1]) < 7):
                     print("y ok")
+                    init.time.sleep(0.5)
                     룬먹기()
                     main = False
 
@@ -131,10 +139,10 @@ def 룬찾으러가기(환경설정) :
                     init.time.sleep(1)
 
             elif (위치[0] < 케릭터위치[0]):
-                lib.키입력(init.right, False)
+                lib.키보드해제()
                 lib.키입력(init.left, True)
             elif (위치[0] > 케릭터위치[0]):
-                lib.키입력(init.left, False)
+                lib.키보드해제()
                 lib.키입력(init.right, True)
 
         else :
