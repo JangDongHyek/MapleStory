@@ -1,5 +1,4 @@
 import lib
-import matplotlib.pyplot as plt
 import win32con
 import win32gui
 import win32api
@@ -50,17 +49,6 @@ hwnd1 = win32gui.FindWindow("MapleStoryClass",None)
 # hwnd2 = win32gui.GetWindow(hwnd1, win32con.GW_CHILD)
 # hwnd3 = win32gui.GetWindow(hwnd2, win32con.GW_CHILD)
 hwnd = hwnd1
-
-
-
-# 하드웨어관련 .dll파일 연결확인
-# dd_dll = windll.LoadLibrary('C:/Users/rando/Desktop/python/MapleStory/DD94687.64.dll')
-# st = dd_dll.DD_btn(0) #classdd 초기설정
-# if st==1:
-#     lib.프린트("하드웨어 연결")
-# else:
-#     lib.프린트("하드웨어 연결실패")
-#     exit()
 
 # 전역변수
 res = "res/"
