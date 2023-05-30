@@ -11,6 +11,7 @@ equipment = 회원['equipment']
 룬시간 = None
 main = True
 매크로 = True
+logCount = 0
 while main :
     if init.win32api.GetKeyState(equipment) :
 
@@ -29,7 +30,15 @@ while main :
             매크로 = False
 
         lib.이미지생성()
-        time.sleep(0.4)
+        lib.이미지생성("screenshot_line",[],True)
+
+        # 100초동안 이미지 로그 생성
+        lib.이미지생성("imageLog/{}".format(logCount))
+        logCount += 1
+        if(logCount > 100) :
+            logCount = 0
+
+        time.sleep(1)
         for image in datas.위험상황:
             if (lib.이미지찾기(image)):
                 환경설정["event"].set()
@@ -41,7 +50,17 @@ while main :
                 main = False
 
         for image in datas.시간거탐:
-            if (lib.이미지찾기(image,0.60)):
+            if (lib.이미지찾기(image,0.85,"screenshot_line")):
+                환경설정["event"].set()
+                time.sleep(1)
+                lib.재생("special")
+                lib.이미지생성(lib.현재시간(True))
+                lib.프린트("(위험상황발생) | " + image)
+                lib.키입력(init.f12)
+                main = False
+
+        for image in datas.유저거탐:
+            if (lib.이미지찾기(image, 0.85, "screenshot_line")):
                 환경설정["event"].set()
                 time.sleep(1)
                 lib.재생("special")
@@ -98,6 +117,7 @@ while main :
 
     else :
         if not 매크로 :
+            logCount = 0
             환경설정["event"].set()
             lib.프린트("매크로종료")
             lib.키입력(init.up, False)

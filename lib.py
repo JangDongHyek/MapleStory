@@ -131,7 +131,9 @@ def 이미지라인(name) :
     img = init.cv2.transform(img, init.np.array(coefficients).reshape((1, 3)))
     scr = init.Image.fromarray(img)
     scr = scr.convert('L')
-    scr.save(name)
+
+    names = name.split(".")
+    scr.save(names[0] + "_line." + names[1])
 
 def 이미지생성(name = 'screenshot',arryes = [], line = False) :
 

@@ -3,6 +3,7 @@ import win32con
 import win32gui
 import win32api
 import win32ui
+import pyautogui
 from PIL import Image,ImageGrab
 import cv2
 import numpy as np
@@ -22,6 +23,7 @@ import pytesseract
 from gtts import gTTS
 
 # 글로벌 변수 및 셋팅
+className = "MapleStoryClass"
 dd_dll = None
 db_host = "localhost"
 db_user = "maple"
@@ -40,7 +42,7 @@ try :
     cur = conn.cursor(pymysql.cursors.DictCursor)
 except :
     lib.프린트("DB연결실패")
-    exit()
+    # exit()
 
 
 
