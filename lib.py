@@ -109,7 +109,6 @@ def 이미지찾기(img,threshold = .85,name = 'screenshot') :
 
     img_array = init.np.fromfile(img, init.np.uint8)
     template = init.cv2.imdecode(img_array, init.cv2.IMREAD_COLOR)
-
     res = init.cv2.matchTemplate(img_rgb, template, init.cv2.TM_CCOEFF_NORMED)
 
     # 임계치 이상만 배열에 저장
@@ -195,7 +194,6 @@ def 백클릭(x,y = 0) :
     init.win32gui.PostMessage(init.hwnd, init.win32con.WM_LBUTTONUP, init.win32con.MK_LBUTTON, lParam)
 
 def 키보드해제() :
-    키입력(init.right, False)
-    키입력(init.left, False)
-    키입력(init.down, False)
-    키입력(init.up, False)
+    arrays = ["right","left","down","up","alt","ctrl"]
+    for key in arrays :
+        키입력(eval("init.{}".format(key)),False)

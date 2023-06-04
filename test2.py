@@ -3,6 +3,7 @@ import numpy as np
 import os
 import tensorflow as tf
 import yolo
+import newLIB as nl
 
 
 
@@ -59,13 +60,17 @@ for i in range(len(boxes)):
         obj = {
             "x" : x,
             "y" : y,
-            "lable" : label
+            "label" : label
         }
         arrays.append(obj)
 
 
 arrays.sort(key = lambda x: x["x"])
+arrows = ""
+for item in arrays :
+    print(item["label"])
+    arrows += item["label"] + "-"
 
-cv2.imshow("Image", img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+name = "res/roon/_{}".format(arrows)
+
+nl.screenshot(name, [690, 170, 1230, 350])

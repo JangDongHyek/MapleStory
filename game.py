@@ -3,6 +3,7 @@ import time
 
 import init
 import lib
+import newLIB as nl
 import datas
 
 
@@ -13,9 +14,8 @@ def 채널이동(환경설정) :
     while main :
         lib.키입력(init.esc)
         time.sleep(0.5)
-        lib.이미지생성()
         time.sleep(0.5)
-        채널변경 = lib.이미지찾기("채널변경")
+        채널변경 = nl.imageSearch("채널변경")
         if(채널변경) :
             lib.키입력(init.enter)
             time.sleep(1)
@@ -23,14 +23,12 @@ def 채널이동(환경설정) :
             time.sleep(5)
             lib.키입력(init.enter)
             time.sleep(1)
-            lib.이미지생성()
-            if(lib.이미지찾기("확인2")) :
+            if(nl.imageSearch("확인2")) :
                 lib.키입력(init.enter)
             else :
                 time.sleep(5)
-                lib.이미지생성()
                 time.sleep(1)
-                유저 = lib.픽셀서치(환경설정["미니맵"], datas.유저)
+                유저 = nl.pixelSearch(환경설정["미니맵"], datas.유저)
                 if (유저):
                     lib.프린트("유저있음 다시 채널이동")
                 else :
@@ -43,51 +41,31 @@ def 룬먹기() :
     init.time.sleep(0.5)
     lib.키입력(init.space)
     time.sleep(0.5)
-    lib.이미지생성("res/roon/" + lib.현재시간(True), [690, 170, 1230, 350])
+    data_image = nl.screenshot(None, [690, 170, 1230, 350])
     time.sleep(0.5)
 
-    main = True
-    endx = 750
+    roon = nl.imageYolo("roon",None, [690, 170, 1230, 350])
+    arrows = ""
+    if(len(roon) == 4) :
+        for item in roon :
+            lib.키입력(eval("init.{}".format(item["label"])))
+            time.sleep(0.1)
+            arrows += item["label"] + "-"
 
-    up_list = init.os.listdir("res/roon/datas/up")
-    down_list = init.os.listdir("res/roon/datas/down")
-    right_list = init.os.listdir("res/roon/datas/right")
-    left_list = init.os.listdir("res/roon/datas/left")
+        data_image.save("res/roon/{}_{}.bmp".format(lib.현재시간(True),arrows))
+        time.sleep(1.5)
+        lib.프린트("룬 완료")
+    else :
+        for item in roon :
+            lib.키입력(eval("init.{}".format(item["label"])))
+            time.sleep(0.1)
+            arrows += item["label"] + "-"
 
-    directions = {
-        "up": up_list,
-        "down": down_list,
-        "right": right_list,
-        "left": left_list
-    }
+        data_image.save("res/roon/error_{}_{}.bmp".format(lib.현재시간(True), arrows))
 
-    while main:
-        lib.이미지생성("roon", [690, 170, endx, 350])
+        lib.프린트("룬의 갯수가 안맞습니다.")
 
-        find = False
 
-        for derection in directions:
-            images = directions[derection]
-
-            for img in images:
-                file = "roon/datas/{}/".format(derection) + img
-                if (lib.이미지찾기(file, 0.85, "roon")):
-                    print(derection)
-                    lib.키입력(eval("init.{}".format(derection)))
-                    time.sleep(1)
-                    find = True
-                    break
-
-            if (find):
-                break
-
-        if (endx > 1230):
-            lib.프린트("1.5초후 룬매크로 종료")
-            time.sleep(1.5)
-            main = False
-            break
-
-        endx += 30
 
 def 룬찾으러가기(환경설정) :
     main = True
@@ -106,19 +84,18 @@ def 룬찾으러가기(환경설정) :
             main = False
             break
 
-        lib.이미지생성("roon")
-        위치 = lib.픽셀서치(환경설정["미니맵"],datas.룬,"roon")
+        위치 = nl.pixelSearch(환경설정["미니맵"],datas.룬)
         if (위치):
-            케릭터위치 = lib.픽셀서치(환경설정["미니맵"], datas.내케릭터,"roon")
+            케릭터위치 = nl.pixelSearch(환경설정["미니맵"], datas.내케릭터)
             # x축
             if (abs(위치[0] - 케릭터위치[0]) < 7):
                 print("x ok")
                 lib.키보드해제()
-                init.time.sleep(0.5)
+                init.time.sleep(1)
 
                 if (abs(위치[1] - 케릭터위치[1]) < 7):
                     print("y ok")
-                    init.time.sleep(0.5)
+                    init.time.sleep(1)
                     룬먹기()
                     main = False
 
@@ -160,9 +137,7 @@ def thread사냥(환경설정) :
     랜덤패턴시간 = init.time.time()
     try :
         while not 환경설정["event"].is_set():
-            lib.이미지생성(사냥이미지)
-
-            케릭터위치 = lib.픽셀서치(환경설정["미니맵"], datas.내케릭터, 사냥이미지)
+            케릭터위치 = nl.pixelSearch(환경설정["미니맵"], datas.내케릭터)
 
             이동패턴 = 환경설정["이동패턴"].copy()
 
@@ -199,17 +174,18 @@ def thread사냥(환경설정) :
 
             init.random.shuffle(이동패턴)
 
-            if(lib.시간비교(랜덤패턴시간,init.random.randrange(180,240))) :
-                랜덤채팅 = init.채팅[init.random.randrange(0,len(init.채팅))]
-                lib.키입력(init.enter)
-                init.time.sleep(init.random.uniform(0.1, 0.15))
-                for item in 랜덤채팅:
-                    lib.키입력(item)
-                    init.time.sleep(init.random.uniform(0.03, 0.15))
-                lib.키입력(init.enter)
-                init.time.sleep(init.random.uniform(0.1, 0.15))
-                lib.키입력(init.enter)
-                랜덤패턴시간 = init.time.time()
+            # 랜덤채팅팅
+           # if(lib.시간비교(랜덤패턴시간,init.random.randrange(180,240))) :
+            #     랜덤채팅 = init.채팅[init.random.randrange(0,len(init.채팅))]
+            #     lib.키입력(init.enter)
+            #     init.time.sleep(init.random.uniform(0.1, 0.15))
+            #     for item in 랜덤채팅:
+            #         lib.키입력(item)
+            #         init.time.sleep(init.random.uniform(0.03, 0.15))
+            #     lib.키입력(init.enter)
+            #     init.time.sleep(init.random.uniform(0.1, 0.15))
+            #     lib.키입력(init.enter)
+            #     랜덤패턴시간 = init.time.time()
 
             for 이동 in 이동패턴:
                 if (환경설정["event"].is_set()):
@@ -248,15 +224,14 @@ def thread사냥(환경설정) :
         환경설정["스레드"] = True
 
 def 환경설정(기본설정) :
-    lib.이미지생성()
     # 미니맵 크기
     for image in datas.미니맵x :
-        x = lib.이미지찾기(image)  # + 40
+        x = nl.imageSearch(image)  # + 40
         if(x) :
             break
 
     for image in datas.미니맵y :
-        y = lib.이미지찾기(image)  # + 40
+        y = nl.imageSearch(image)  # + 40
         if(y) :
             break
     # print(x)
@@ -357,11 +332,10 @@ def 기본설정(회원,캐릭터) :
     else :
         lib.키입력(init.s)
         time.sleep(0.5)
-        lib.이미지생성()
         time.sleep(0.5)
-        이름 = lib.이미지찾기("이름")
+        이름 = nl.imageSearch("이름")
         if (이름):
-            lib.이미지생성("캐릭터", [이름[0] + 55, 이름[1], 이름[0] + 150, 이름[1] + 15])
+            nl.screenshot("캐릭터", [이름[0] + 55, 이름[1], 이름[0] + 150, 이름[1] + 15])
             image = init.Image.open("캐릭터.bmp")
             img_resize = image.resize((int(image.width * 3), int(image.height * 3)))
             img_resize.save("캐릭터.bmp")

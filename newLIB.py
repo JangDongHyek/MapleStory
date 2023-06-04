@@ -1,11 +1,54 @@
 import init
 
+def pixcelPartSearch(lower,upper,name = None,save = False) :
+    #특정 픽셀 서치 검색 RGB순서가아닌 BGR 순서로 값을 넣어줘야한다
 
-def imageYolo(name = None, scale = []) :
-    net = init.cv2.dnn.readNet("mapleArrow.weights", "yolov3.cfg")
+    if(name) :
+        img_color = init.cv2.imread(name)  # 이미지 파일을 컬러로 불러옴
+    else :
+        img_color = screenshot()
+        img_color = init.np.array(img_color)
+        img_color = init.cv2.cvtColor(img_color, init.cv2.COLOR_BGR2RGB)
+
+    img_hsv = init.cv2.cvtColor(img_color, init.cv2.COLOR_BGR2HSV)  # cvtColor 함수를 이용하여 hsv 색공간으로 변환
+
+    img_mask = init.cv2.inRange(img_hsv, lower, upper)  # 범위내의 픽셀들은 흰색, 나머지 검은색
+
+    if(name) :
+        names = name.split(".")
+        init.cv2.imwrite(names[0] + "_part." + names[1], img_mask)  # imgs 폴더에 Lenna_GrayScale.png 이미지 저장
+    else :
+        if save :
+            init.cv2.imwrite("pixcelPartSearch.bmp", img_mask)
+        else :
+            return init.Image.fromarray(img_mask)
+
+    return None
+
+def pixelSearch(points, pixcels) :
+    screen = screenshot().load()
+
+    main = True
+    x = points[0]
+    y = points[1]
+
+    while main:
+        if x == points[2] and y == points[3]:
+            main = False
+        if screen[x, y] in pixcels:
+            return (x, y)
+
+        if x == points[2]:
+            y += 1
+            x = points[0]
+        x += 1
+    return None
+
+def imageYolo(weights,name = None, scale = []) :
+    net = init.cv2.dnn.readNet(weights + ".weights", weights + ".cfg")
     classes = []
     arrays = []
-    with open("coco.names", "r") as f:
+    with open(weights + ".names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
@@ -65,7 +108,7 @@ def imageYolo(name = None, scale = []) :
             obj = {
                 "x": x,
                 "y": y,
-                "lable": label
+                "label": label
             }
 
             arrays.append(obj)
@@ -74,7 +117,19 @@ def imageYolo(name = None, scale = []) :
 
     return arrays
 
-def imageSearch(img,confidence = 0.85) :
+def imageLine(name) :
+    img = init.cv2.imread(name)
+    img = init.cv2.GaussianBlur(img, (3, 3), 0)
+    img = init.cv2.cvtColor(img, init.cv2.COLOR_BGR2HSV)
+    coefficients = (0.001, 0, 1.2)  # (h, s, v)
+    img = init.cv2.transform(img, init.np.array(coefficients).reshape((1, 3)))
+    scr = init.Image.fromarray(img)
+    scr = scr.convert('L')
+
+    names = name.split(".")
+    scr.save(names[0] + "_line." + names[1])
+
+def imageSearch(img,confidence = 0.85,image = None) :
     name = ""
 
     if not "/" in img :
@@ -85,7 +140,14 @@ def imageSearch(img,confidence = 0.85) :
     else :
         name += img + ".png"
 
-    result = init.pyautogui.locate(name,screenshot(),confidence=confidence)
+    # 한글이름 이미지 읽게하기
+    img_array = init.np.fromfile(name, init.np.uint8)
+    template = init.cv2.imdecode(img_array, init.cv2.IMREAD_COLOR)
+
+    if image :
+        result = init.pyautogui.locate(template, image, confidence=confidence)
+    else :
+        result = init.pyautogui.locate(template,screenshot(),confidence=confidence)
 
     return result
 
@@ -113,3 +175,9 @@ def screenshot(name = None,scale = []):
         if name:
             im.save(name)
         return im
+
+def getTime(bool = False) :
+    if(bool) :
+        return init.time.strftime('%Y%m%d %H%M%S')
+    else :
+        return init.time.strftime('%Y-%m-%d_%H:%M:%S')
