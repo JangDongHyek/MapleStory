@@ -45,10 +45,10 @@ def pixelSearch(points, pixcels) :
     return None
 
 def imageYolo(weights,name = None, scale = []) :
-    net = init.cv2.dnn.readNet(weights + ".weights", weights + ".cfg")
+    net = init.cv2.dnn.readNet("yolo/" + weights + ".weights","yolo/" + weights + ".cfg")
     classes = []
     arrays = []
-    with open(weights + ".names", "r") as f:
+    with open("yolo/" + weights + ".names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
     layer_names = net.getLayerNames()
     output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
