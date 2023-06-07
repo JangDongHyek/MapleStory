@@ -6,12 +6,15 @@ import datas
 import os
 import time
 import lib
+import game
 
+
+# lib.TTS생성("violetta")
 # nl.screenshot("asd.bmp")
 # asd = nl.pixcelPartSearch((19,178,152),(24,255,255),"c3.bmp",True)
 # print(nl.screenshot())
 # print(asd)
-os.rename("pixcelPartSearch.bmp",lib.현재시간(True) + ".bmp")
+# os.rename("pixcelPartSearch.bmp",lib.현재시간(True) + ".bmp")
 # for img in datas.시간거탐 :
 #     asd = nl.imageSearch(img,0.7,"a_part.bmp")
 #     print(asd)

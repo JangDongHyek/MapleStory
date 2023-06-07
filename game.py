@@ -6,6 +6,23 @@ import lib
 import newLIB as nl
 import datas
 
+def 게임종료() :
+    main = True
+    lib.키보드해제()
+    while main :
+        lib.키입력(init.esc)
+        time.sleep(0.5)
+        채널변경 = nl.imageSearch("채널변경")
+        if (채널변경):
+            lib.키입력(init.up)
+            time.sleep(0.5)
+            lib.키입력(init.enter)
+            time.sleep(0.5)
+            lib.키입력(init.enter)
+            main = False
+
+    lib.프린트("게임종료")
+
 
 def 채널이동(환경설정) :
     count = 0
@@ -41,6 +58,7 @@ def 룬먹기() :
     init.time.sleep(0.5)
     lib.키입력(init.space)
     time.sleep(0.5)
+    nl.screenshot("res/roon/full/{}.bmp".format(lib.현재시간(True)))
     data_image = nl.screenshot(None, [690, 170, 1230, 350])
     time.sleep(0.5)
 

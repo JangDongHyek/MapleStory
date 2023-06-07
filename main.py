@@ -15,7 +15,9 @@ main = True
 logCount = 0
 사냥시간 = time.time()
 timer = time.time()
-timer_time = 3000
+
+timer_time = 90000
+lie_count = 0
 while main :
     if init.win32api.GetKeyState(equipment) :
 
@@ -45,18 +47,21 @@ while main :
             if (nl.imageSearch(image)):
                 환경설정["event"].set()
                 time.sleep(1)
-                lib.재생("special")
-                nl.screenshot(lib.현재시간(True))
-                lib.프린트("(위험상황발생) | " + image)
+                lib.키보드해제()
+                lib.재생("violetta")
                 lib.키입력(init.f12)
                 main = False
 
         # 거탐 픽셀 이미지화
         nl.pixcelPartSearch(datas.거탐색범위[0], datas.거탐색범위[1],None,True)
         if(nl.imageYolo("lie","pixcelPartSearch.bmp")) :
-            lib.재생("lie_detection")
-            # 서취된 파일 저장
-            init.os.rename("pixcelPartSearch.bmp",lib.현재시간(True) + ".bmp")
+            lie_count += 1
+            if (lie_count > 1):
+                lib.재생("real_detection")
+                # 서취된 파일 저장
+                init.os.rename("pixcelPartSearch.bmp", lib.현재시간(True) + ".bmp")
+        else :
+            lie_count = 0
 
 
         if (nl.imageSearch("묘비")):
