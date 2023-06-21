@@ -16,7 +16,7 @@ logCount = 0
 사냥시간 = time.time()
 timer = time.time()
 
-timer_time = 90000
+timer_time = 36000
 lie_count = 0
 while main :
     if init.win32api.GetKeyState(equipment) :
