@@ -25,7 +25,7 @@ from gtts import gTTS
 # 글로벌 변수 및 셋팅
 className = "MapleStoryClass"
 dd_dll = None
-db_host = "localhost"
+db_host = "125.180.141.41"
 db_user = "maple"
 db_password = "141215"
 db_name = "maple"
