@@ -42,7 +42,6 @@ while main :
         if(logCount > 100) :
             logCount = 0
 
-        time.sleep(0.25)
         for image in datas.위험상황:
             if (nl.imageSearch(image)):
                 환경설정["event"].set()
@@ -53,13 +52,12 @@ while main :
                 main = False
 
         # 거탐 픽셀 이미지화
-        nl.pixcelPartSearch(datas.거탐색범위[0], datas.거탐색범위[1],None,True)
-        if(nl.imageYolo("lie","pixcelPartSearch.bmp")) :
+        if(nl.imageYolo("lie")) :
             lie_count += 1
             if (lie_count > 1):
                 lib.재생("real_detection")
                 # 서취된 파일 저장
-                init.os.rename("pixcelPartSearch.bmp", lib.현재시간(True) + ".bmp")
+                nl.screenshot(lib.현재시간(True))
         else :
             lie_count = 0
 
@@ -75,12 +73,12 @@ while main :
                     # lib.재생("exp")
                     경뿌 = False
 
-        # if(lib.픽셀서치(환경설정["미니맵"],datas.노란포탈)) :
-        #     if(포탈카운트 < 1) :
-        #         포탈카운트 += 1
-        #         lib.재생("portal")
+        if(nl.pixelSearch(환경설정["미니맵"],datas.노란포탈)) :
+            if(포탈카운트 < 1) :
+                포탈카운트 += 1
+                lib.재생("portal")
 
-        if(lib.시간비교(사냥시간,1800)) :
+        if(lib.시간비교(사냥시간,3600)) :
             환경설정["event"].set()
             time.sleep(1)
             lib.프린트("사냥한지 30분 지나서 서버이동")

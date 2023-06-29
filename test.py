@@ -16,7 +16,7 @@ images2 = ["110on","120on","130on"]
 mouserightdown = 4
 mouserightup = 8
 
-init.dd_dll = init.windll.LoadLibrary("C:/python/MapleStory/ddl/DD94687.64.dll")
+init.dd_dll = init.windll.LoadLibrary("C:/Users/rando/Desktop/python/MapleStory/ddl/DD94687.64.dll")
 st = init.dd_dll.DD_btn(0)  # classdd 초기설정
 if st == 1:
     lib.프린트("하드웨어 연결")

@@ -359,7 +359,7 @@ def 기본설정(회원,캐릭터) :
             img_resize.save("캐릭터.bmp")
             접속캐릭터 = init.pytesseract.image_to_string('캐릭터.bmp', lang='kor+eng',
                                                      config='-c preserve_interword_spaces=1 --psm 4')
-            접속캐릭터 = init.re.sub('[\n,",;,|, ]', "", 접속캐릭터)
+            접속캐릭터 = init.re.sub('[\n,",;,|, ,=]', "", 접속캐릭터)
 
     lib.프린트("인식된 닉네임 {}".format(접속캐릭터))
     lib.키입력(init.s)
