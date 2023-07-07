@@ -11,8 +11,7 @@ import pyautogui as pg
 import init
 
 main = True
-images = ["110","120","130"]
-images2 = ["110on","120on","130on"]
+images = ["110","120","130","140","150"]
 mouserightdown = 4
 mouserightup = 8
 
@@ -50,11 +49,11 @@ while main :
                 lib.키입력(init.enter)
                 count = 0
             else:
-                lib.재생("violetta")
+                print(1)
                 exit()
 
         else :
-            lib.재생("violetta")
+            print(2)
             exit()
     else :
         time.sleep(1)
